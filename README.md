@@ -19,3 +19,19 @@ Pour le lancer le projet backend(serveur)
 Accès sur http://localhost:PORT en local
 
 ## Démarrage du frontend
+
+cd frontend
+
+Pour aller dans le repertoire du backend
+
+
+npm install
+
+Pour récupérer tous les packages utiles au projet
+
+
+npm run dev
+
+Pour le lancer le projet frontend (interface)
+
+Accès sur http://localhost:PORT en local
