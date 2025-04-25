@@ -1,0 +1,8 @@
+# dependencies
+backend/node_modules
+
+# IDEs and editors
+/.idea
+
+# Environnment variables
+.env
