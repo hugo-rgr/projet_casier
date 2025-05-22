@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const UserSchema = new mongoose.Schema({
-    firstname: { type: String, required: [true, 'First name is required'] },
-    lastname: { type: String, required: [true, 'Last name is required'] },
+    firstname: { type: String, required: [true, 'First name is required'], minlength: 1, maxlength: 50, trim: true },
+    lastname: { type: String, required: [true, 'Last name is required'], minlength: 1, maxlength: 50, trim: true },
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -17,7 +18,6 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minlength: [8, 'Password must be at least 8 characters']
     },
     role: {
         type: String,
@@ -31,5 +31,30 @@ const UserSchema = new mongoose.Schema({
 }, {
     timestamps: true // CreatedAt and updatedAt fields
 });
+
+const saltRounds = 12;
+
+UserSchema.pre('save', async function(next) {
+    if (this.password.length < 8 || this.password.length > 20) { //validation here to avoid validation after hashing
+        const error = new Error('Password must be between 8-20 characters');
+        return next(error);
+    }
+
+    // Hash password before saving if modified, else don't rehash every time while updating
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    next();
+});
+
+UserSchema.methods.comparePassword = async function(candidatePassword: string) {
+    return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Hide password in JSON responses
+UserSchema.methods.toJSON = function() {
+    const user = this.toObject();
+    delete user.password;
+    return user;
+};
 
 export default mongoose.model('users', UserSchema);
