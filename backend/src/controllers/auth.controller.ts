@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.model';
 import {UserRole} from "../types";
+import {generateToken} from "../middlewares/auth.middleware";
 
 export class AuthController {
     async register(req: Request, res: Response) {
@@ -108,11 +109,13 @@ export class AuthController {
                 return;
             }
 
-            const token = jwt.sign(
+            /*const token = jwt.sign(
                 { id: user._id, email: user.email, role: user.role },
                 process.env.JWT_SECRET!,
                 { expiresIn: '24h' }
-            );
+            );*/
+
+            const token =  generateToken(user.id, user.role);
 
             res.json({
                 token,

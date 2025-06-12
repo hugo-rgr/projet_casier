@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 // JWT configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key'; //TODO: exception if null
-const JWT_EXPIRES_IN = '1h'; //TODO: change to process.env.JWT_EXPIRES_IN || '1h'
+const JWT_EXPIRES_IN = '24h'; //TODO: change to process.env.JWT_EXPIRES_IN || '1h'
 
 export interface AuthenticatedRequest extends Request {
     user?: any;
