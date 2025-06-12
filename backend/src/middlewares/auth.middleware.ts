@@ -1,10 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User';
 
 // JWT configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key'; //TODO: exception if null
 const JWT_EXPIRES_IN = '1h'; //TODO: change to process.env.JWT_EXPIRES_IN || '1h'
+
+export interface AuthenticatedRequest extends Request {
+    user?: any;
+}
 
 // Generate JWT token
 export const generateToken = (userId: string, role: string) => {
@@ -93,13 +96,27 @@ export const generateToken = (userId: string, role: string) => {
 //    });
 //};
 
-export const verifyToken = (req: any, res: any, next: any) => {
+export const verifyToken = (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+): void => {
     const token = req.headers['authorization'];
-    if (!token) return res.status(403).send('Token manquant.');
+
+    if (!token) {
+        res.status(403).send('Token manquant.');
+        return;
+    }
 
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-        if (err) return res.status(500).send('Echec de l\'authentification');
+        if (err) {
+            res.status(500).send("Échec de l'authentification");
+            return;
+        }
+
         req.user = decoded;
         next();
-    })
-}
+    });
+};
+
+

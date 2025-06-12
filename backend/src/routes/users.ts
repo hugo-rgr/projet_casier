@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import User from '../models/User';
-import {verifyToken} from "../middlewares/jwt";
+import User from '../models/User.model';
+import {verifyToken} from "../middlewares/auth.middleware";
 
 interface AuthenticatedRequest extends Request {
     user?: any;
