@@ -101,18 +101,6 @@ import {LockerStatus} from "../types";
 
 }
 
-export const releaseExpiredLockers = async () => {
-    const now = new Date();
-    const expiredLockers = await Locker.find({
-        status: LockerStatus.RESERVED,
-        expiresAt: { $lte: now }
-    });
-
-    for (const locker of expiredLockers) {
-        locker.status = LockerStatus.AVAILABLE;
-        await locker.save();
-    }
-};
 export const lockerController = new LockerController();
 
 

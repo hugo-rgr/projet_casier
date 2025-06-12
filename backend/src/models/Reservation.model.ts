@@ -52,11 +52,5 @@ const ReservationSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Middleware pour libérer le casier quand une réservation est annulée ou supprimée
-ReservationSchema.post('findOneAndDelete', async function(doc) {
-    if (doc) {
-        await mongoose.model('Locker').findByIdAndUpdate(doc.locker, { status: 'available' });
-    }
-});
 
 export default mongoose.model('Reservation', ReservationSchema);

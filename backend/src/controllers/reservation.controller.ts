@@ -38,6 +38,7 @@ class ReservationController {
 
             if (locker.status !== LockerStatus.AVAILABLE) {
                  res.status(400).json({ error: 'Locker is not available' });
+                    return;
             }
 
             const startDate = new Date();
