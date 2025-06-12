@@ -28,6 +28,20 @@ const UserSchema = new mongoose.Schema({
         default: 'user',
         required: true
     },
+    is_email_verified: {
+        type: Boolean,
+        default: false
+    },
+    email_verification_token: {
+        type: String,
+        default: null,
+        required: false
+    },
+    email_verification_token_expires: {
+        type: Date,
+        default: null,
+        required: false
+    },
 }, {
     timestamps: true // CreatedAt and updatedAt fields
 });
