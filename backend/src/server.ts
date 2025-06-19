@@ -6,6 +6,8 @@ import userRoutes from './routes/users.routes';
 import lockerRoutes from "./routes/lockers.routes";
 import reservationRoutes from "./routes/reservations.routes";
 import authRoutes from "./routes/auth.routes";
+import swaggerUi from 'swagger-ui-express';
+import {swaggerSpec} from "./swagger";
 
 dotenv.config({ path: '../.env' });
 const PORT = process.env.PORT || 3000;
@@ -13,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //Connexion à la base de données
 connectDB();
