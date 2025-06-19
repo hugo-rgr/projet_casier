@@ -9,7 +9,7 @@ import {generateToken} from "../middlewares/auth.middleware";
 export class AuthController {
     async register(req: Request, res: Response) {
         try {
-            const { email, password, firstname, lastname, phone, role, ...additional_info } = req.body;
+            const { email, password, firstname, lastname } = req.body;
 
             // Check if user already exists
             const existingUser = await User.findOne({ email });
@@ -28,12 +28,10 @@ export class AuthController {
                 password: hashed_password,
                 firstname,
                 lastname,
-                phone,
-                role: role ?? UserRole.CLIENT,
+                role: UserRole.CLIENT,
                 is_email_verified: false,
                 email_verification_token: verification_code,
                 email_verification_token_expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
-                ...additional_info
             });
 
             await newUser.save();
