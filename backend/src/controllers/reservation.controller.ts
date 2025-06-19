@@ -20,7 +20,6 @@ class ReservationController {
     }
 
     private initCronJobs(): void {
-        // 1. Nettoyage des utilisateurs inactifs (tous les jours à 2h)
         this.cleanupCronJob = cron.schedule('0 2 * * *', async () => {
             await this.processExpiredReservations();
         });
@@ -28,26 +27,30 @@ class ReservationController {
     async createReservation(req: AuthenticatedRequest, res: Response) {
         try {
             const { lockerId, duration } = req.body;
-            const userId = req.user.userId;
+            const userId = req.user?.userId; // Add optional chaining in case user is undefined
+
+            if (!userId) {
+                res.status(401).json({ error: 'User not authenticated' });
+                return;
+            }
 
             const locker = await Locker.findById(lockerId);
             if (!locker) {
-                 res.status(404).json({ error: 'Locker not found' });
-                 return;
+                res.status(404).json({ error: 'Locker not found' });
+                return;
             }
 
             if (locker.status !== LockerStatus.AVAILABLE) {
-                 res.status(400).json({ error: 'Locker is not available' });
-                    return;
+                res.status(400).json({ error: 'Locker is not available' });
+                return;
             }
 
             const startDate = new Date();
             const endDate = new Date(startDate.getTime() + duration * 24 * 60 * 60 * 1000);
             const totalPrice = locker.price * duration;
 
-
             const toRegisterReservation = await Reservation.create({
-                user: userId,
+                user: userId, // Use userId directly (assuming it's already the ObjectId)
                 locker: locker._id,
                 startDate,
                 endDate,
@@ -87,10 +90,10 @@ class ReservationController {
 
             res.status(201).json(toRegisterReservation);
         } catch (error) {
+            console.error("Reservation creation error:", error); // More descriptive log
             res.status(400).json({ error: (error as Error).message });
         }
     }
-
     async getReservation(req: Request, res: Response) {
         try {
             const reservation = await Reservation.findById(req.params.id)

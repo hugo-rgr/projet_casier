@@ -22,11 +22,25 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: {
-            values: ['user', 'admin'],
+            values: ['client', 'admin'],
             message: '{VALUE} is not a valid role'
         },
         default: 'user',
         required: true
+    },
+    is_email_verified: {
+        type: Boolean,
+        default: false
+    },
+    email_verification_token: {
+        type: String,
+        default: null,
+        required: false
+    },
+    email_verification_token_expires: {
+        type: Date,
+        default: null,
+        required: false
     },
 }, {
     timestamps: true // CreatedAt and updatedAt fields
@@ -34,7 +48,7 @@ const UserSchema = new mongoose.Schema({
 
 const saltRounds = 12;
 
-UserSchema.pre('save', async function(next) {
+/*UserSchema.pre('save', async function(next) {
     if (this.password.length < 8 || this.password.length > 20) { //validation here to avoid validation after hashing
         const error = new Error('Password must be between 8-20 characters');
         return next(error);
@@ -44,7 +58,7 @@ UserSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, saltRounds);
     next();
-});
+});*/
 
 UserSchema.methods.comparePassword = async function(candidatePassword: string) {
     return bcrypt.compare(candidatePassword, this.password);
@@ -57,4 +71,4 @@ UserSchema.methods.toJSON = function() {
     return user;
 };
 
-export default mongoose.model('users', UserSchema);
+export default mongoose.model('User', UserSchema);
