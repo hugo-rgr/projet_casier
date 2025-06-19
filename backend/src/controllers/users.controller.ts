@@ -14,7 +14,7 @@ import {AuthenticatedRequest} from "../middlewares/auth.middleware";
         }
     }
 
-    async getUser(req: Request, res: Response) {
+    async getUser(req: AuthenticatedRequest, res: Response) {
         try {
             const user = await User.findById(req.params.id);
             if (!user) {
@@ -27,7 +27,24 @@ import {AuthenticatedRequest} from "../middlewares/auth.middleware";
         }
     }
 
-    async getAllUsers(req: Request, res: Response) {
+
+
+     async getMyUser(req: AuthenticatedRequest, res: Response) {
+         try {
+             const userId = req.user?.userId;
+             const user = await User.findById(userId);
+             if (!user) {
+                 res.status(404).json({ error: 'User not found' });
+                 return;
+             }
+             res.json(user);
+         } catch (error) {
+             res.status(500).json({ error: (error as Error).message });
+         }
+     }
+
+
+     async getAllUsers(req: Request, res: Response) {
         try {
             const users = await User.find();
             res.json(users);
