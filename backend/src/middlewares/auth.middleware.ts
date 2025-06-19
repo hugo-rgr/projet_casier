@@ -101,7 +101,7 @@ export const verifyToken = (
     res: Response,
     next: NextFunction
 ): void => {
-    const token = req.headers['authorization'];
+    const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
         res.status(403).send('Token manquant.');
@@ -110,11 +110,12 @@ export const verifyToken = (
 
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
         if (err) {
+            console.log(err);
             res.status(500).send("Échec de l'authentification");
             return;
         }
-
         req.user = decoded;
+        console.log("Aller"+ JSON.stringify(req.user));
         next();
     });
 };

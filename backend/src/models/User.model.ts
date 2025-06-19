@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: {
-            values: ['user', 'admin'],
+            values: ['client', 'admin'],
             message: '{VALUE} is not a valid role'
         },
         default: 'user',
@@ -71,4 +71,4 @@ UserSchema.methods.toJSON = function() {
     return user;
 };
 
-export default mongoose.model('users', UserSchema);
+export default mongoose.model('User', UserSchema);
