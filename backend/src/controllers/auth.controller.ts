@@ -17,6 +17,10 @@ export class AuthController {
                 res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
                 return;
             }
+            if (password && password.length < 5) {
+                res.status(400).json({ message: 'Le mot de passe doit contenir au moins 5 caractères' });
+                return;
+            }
 
             // Generate verification code
             const verification_code = Math.random().toString(36).substring(2, 8).toUpperCase();
