@@ -35,3 +35,9 @@ npm run dev
 Pour le lancer le projet frontend (interface)
 
 Accès sur http://localhost:PORT en local
+
+# Configuration du .env
+
+Renommer et le .env.example en .env et mettre les bonnes valeurs
+
+
